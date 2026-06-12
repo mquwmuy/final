@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Регистрация</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+                background: rgb(77, 77, 77);
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+            }
+
+            .container {
+                background: white;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+                padding: 40px;
+                width: 100%;
+                max-width: 450px;
+            }
+
+            h2 {
+                text-align: center;
+                color: #333;
+                margin-bottom: 30px;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 5px;
+                margin-top: 15px;
+                color: #555;
+                font-weight: bold;
+                text-align: left;
+            }
+
+            label:first-of-type {
+                margin-top: 0;
+            }
+
+            input {
+                display: block;
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 14px;
+            }
+
+            input:focus {
+                outline: none;
+                border-color: #ea66d6;
+            }
+
+            button {
+                padding: 10px 20px;
+                background: #ea66d6;
+                color: white;
+                border: none;
+                cursor: pointer;
+                display: block;
+                width: 100%;
+                margin-top: 25px;
+                font-size: 16px;
+                border-radius: 4px;
+            }
+
+            .error {
+                color: red;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 10px;
+            }
+
+            .link {
+                text-align: center;
+                margin-top: 15px;
+            }
+
+            .link a {
+                color: #ea66d6;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>
+        <form class="container" id="registerForm">
+            <h2>Регистрация</h2>
+            
+            <label>Логин</label>
+            <input
+                type="text"
+                id="login"
+                placeholder="Логин (мин 6, латиница+цифры)"
+                required
+            />
+            
+            <label>Пароль</label>
+            <input
+                type="password"
+                id="password"
+                placeholder="Пароль (мин 8)"
+                required
+            />
+            
+            <label>Имя</label>
+            <input type="text" id="name" placeholder="Имя" required />
+            
+            <label>Фамилия</label>
+            <input type="text" id="lastName" placeholder="Фамилия" required />
+            
+            <label>Отчество</label>
+            <input
+                type="text"
+                id="middleName"
+                placeholder="Отчество (необязательно)"
+            />
+            
+            <label>Почта</label>
+            <input type="email" id="email" placeholder="Email" required />
+            
+            <label>Номер телефона</label>
+            <input type="text" id="phone" placeholder="Телефон" required />
+            
+            <button type="submit">Зарегистрироваться</button>
+            <div id="error" class="error"></div>
+            <div class="link">
+                Уже есть аккаунт? <a href="login.html">Войти</a>
+            </div>
+        </form>
+
+        <script>
+            document.getElementById("registerForm").onsubmit = async (e) => {
+                e.preventDefault();
+                const data = {
+                    login: document.getElementById("login").value,
+                    password: document.getElementById("password").value,
+                    name: document.getElementById("name").value,
+                    lastName: document.getElementById("lastName").value,
+                    middleName:
+                        document.getElementById("middleName").value || null,
+                    email: document.getElementById("email").value,
+                    phone: parseInt(document.getElementById("phone").value),
+                };
+
+                const res = await fetch(
+                    "http://localhost:3000/api/auth/register",
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(data),
+                    },
+                );
+                const result = await res.json();
+                if (res.ok) {
+                    alert("Успешно! Теперь войдите");
+                    window.location.href = "login.html";
+                } else {
+                    document.getElementById("error").innerText = result.error;
+                }
+            };
+        </script>
+    </body>
+</html>
