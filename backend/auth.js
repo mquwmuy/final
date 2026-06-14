@@ -22,7 +22,7 @@ router.post('/register', async (req, res) => {
         if (login.length < 6) {
             return res.status(400).json({ error: 'Логин должен быть минимум 6 символов' });
         }
-        if (!/^[a-zA-Z0-9]+$/.test(login)) {
+        if (!/^[a-zA-Z0-9]+$/.test(login)) { //.test(login)	Метод, который проверяет, подходит ли строка под правило
             return res.status(400).json({ error: 'Логин может содержать только латинские буквы и цифры' });
         }
         
@@ -36,7 +36,7 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ error: 'Введите корректный email' });
         }
 
-        // Проверяем, не занят ли логин
+        // Проверяем не занят ли логин
         const checkUser = await db.query(
             'SELECT * FROM user_ WHERE login_user = $1',
             [login]
@@ -58,9 +58,7 @@ router.post('/register', async (req, res) => {
             [login, hashedPassword, name, lastName, middleName || null, email, phone, 3]
         );
 
-        // 6️⃣ Всё хорошо, возвращаем успех
         res.status(201).json({ 
-            message: 'Пользователь успешно зарегистрирован!',
             userId: result.rows[0].user_id
         });
 
@@ -70,7 +68,6 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// ЛОГИН (упрощённая версия без токенов)
 router.post('/login', async (req, res) => {
     try {
         const { login, password } = req.body;
@@ -95,7 +92,6 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ error: 'Неверный логин или пароль' });
         }
 
-        // Просто возвращаем userId (без токена)
         res.json({
             success: true,
             userId: user.user_id,

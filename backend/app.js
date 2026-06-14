@@ -1,22 +1,30 @@
 const express = require('express');
 const cors = require('cors');
-const db = require('./connect');  // это просто проверить подключение
+const db = require('./connect');
 
 const app = express();
 const PORT = 3000;
 
-app.use(cors()); //cors типа чтобы браузер мог обращаться к серверу с разных адресов/ и чтобы это работало везде
+// Middleware
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // это всё мидлваре
+app.use(express.urlencoded({ extended: true }));
 
+// Маршруты
 const authRoutes = require('./auth');
-app.use('/api/auth', authRoutes);
+const requestsRoutes = require('./requests');  // ← ЭТА СТРОЧКА ДОЛЖНА БЫТЬ
+const adminRoutes = require('./admin');
 
+app.use('/api/auth', authRoutes);
+app.use('/api/requests', requestsRoutes);      // ← И ЭТА СТРОЧКА
+app.use('/api/admin', adminRoutes);
+
+// Проверка работы сервера
 app.get('/', (req, res) => {
     res.send('Сервер работает!');
 });
 
-// Запускаем сервер
+// Запуск сервера
 app.listen(PORT, () => {
-    console.log(`Сервер запущен на http://localhost:${PORT}`);
+    console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
 });

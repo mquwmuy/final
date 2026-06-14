@@ -31,17 +31,15 @@ router.get('/user/:userId', async (req, res) => {
     }
 });
 
-// СОЗДАТЬ НОВУЮ ЗАЯВКУ
+// новая заявка
 router.post('/', async (req, res) => {
     try {
         const { userId, transportId, startDate, paymentMethod } = req.body;
         
-        // Проверки
         if (!userId || !transportId || !startDate || !paymentMethod) {
             return res.status(400).json({ error: 'Заполните все поля' });
         }
         
-        // Создаём заявку со статусом "Новая"
         const result = await db.query(
             `INSERT INTO requests (status_requests, payment_requests, start_requests, user_id_fk, transport_id_fk) 
              VALUES ($1, $2, $3, $4, $5) 
@@ -65,7 +63,7 @@ router.post('/:requestId/feedback', async (req, res) => {
         const { requestId } = req.params;
         const { feedback, userId } = req.body;
         
-        // Проверяем, что заявка принадлежит пользователю и имеет статус "Обучение завершено"
+        // проверяем что заявка принадлежит пользователю и имеет статус "Обучение завершено"
         const checkResult = await db.query(
             `SELECT * FROM requests 
              WHERE requests_id = $1 AND user_id_fk = $2`,
@@ -82,7 +80,7 @@ router.post('/:requestId/feedback', async (req, res) => {
             return res.status(400).json({ error: 'Отзыв можно оставить только после завершения обучения' });
         }
         
-        // Добавляем отзыв
+        // добавляем отзыв
         await db.query(
             `UPDATE requests SET feedback = $1 WHERE requests_id = $2`,
             [feedback, requestId]

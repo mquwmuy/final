@@ -138,36 +138,62 @@
             </div>
         </form>
 
-        <script>
-            document.getElementById("registerForm").onsubmit = async (e) => {
-                e.preventDefault();
-                const data = {
-                    login: document.getElementById("login").value,
-                    password: document.getElementById("password").value,
-                    name: document.getElementById("name").value,
-                    lastName: document.getElementById("lastName").value,
-                    middleName:
-                        document.getElementById("middleName").value || null,
-                    email: document.getElementById("email").value,
-                    phone: parseInt(document.getElementById("phone").value),
-                };
-
-                const res = await fetch(
-                    "http://localhost:3000/api/auth/register",
-                    {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(data),
-                    },
-                );
-                const result = await res.json();
-                if (res.ok) {
-                    alert("Успешно! Теперь войдите");
-                    window.location.href = "login.html";
-                } else {
-                    document.getElementById("error").innerText = result.error;
-                }
-            };
-        </script>
+<script>
+    document.getElementById('registerForm').onsubmit = async (e) => {
+        e.preventDefault();
+        
+        const data = {
+            login: document.getElementById('login').value,
+            password: document.getElementById('password').value,
+            name: document.getElementById('name').value,
+            lastName: document.getElementById('lastName').value,
+            middleName: document.getElementById('middleName').value || null,
+            email: document.getElementById('email').value,
+            phone: parseInt(document.getElementById('phone').value)
+        };
+        
+        try {
+            // 1️⃣ Сначала регистрируем пользователя
+            const registerRes = await fetch('http://localhost:3000/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            const registerResult = await registerRes.json();
+            
+            if (!registerRes.ok) {
+                document.getElementById('error').innerText = registerResult.error;
+                return;
+            }
+            
+            // 2️⃣ Регистрация успешна! Теперь сразу логинимся
+            const loginRes = await fetch('http://localhost:3000/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    login: data.login,
+                    password: data.password
+                })
+            });
+            
+            const loginResult = await loginRes.json();
+            
+            if (loginRes.ok) {
+                // Сохраняем данные пользователя
+                localStorage.setItem('userId', loginResult.userId);
+                localStorage.setItem('roleId', loginResult.roleId);
+                
+                // Сразу переходим в личный кабинет (без уведомлений)
+                window.location.href = 'dashboard.html';
+            } else {
+                // Если автоматический вход не сработал
+                window.location.href = 'login.html';
+            }
+        } catch (error) {
+            document.getElementById('error').innerText = 'Ошибка подключения к серверу';
+        }
+    };
+</script>
     </body>
 </html>
