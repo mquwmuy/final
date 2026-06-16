@@ -12,12 +12,12 @@ app.use(express.urlencoded({ extended: true }));
 
 // Маршруты
 const authRoutes = require('./auth');
-const requestsRoutes = require('./requests');  // ← ЭТА СТРОЧКА ДОЛЖНА БЫТЬ
+const requestsRoutes = require('./requests');  
 const adminRoutes = require('./admin');
 
 app.use('/api/auth', authRoutes);
-app.use('/api/requests', requestsRoutes);      // ← И ЭТА СТРОЧКА
-app.use('/api/admin', adminRoutes);
+app.use('/api/requests', requestsRoutes);   
+app.use('/api/admin', adminRoutes); 
 
 // Проверка работы сервера
 app.get('/', (req, res) => {

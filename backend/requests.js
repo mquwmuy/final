@@ -93,7 +93,7 @@ router.post('/:requestId/feedback', async (req, res) => {
     }
 });
 
-// ПОЛУЧИТЬ ВСЕ ВИДЫ ТРАНСПОРТА (для выпадающего списка)
+// получием все виды транспорта для списка
 router.get('/transports', async (req, res) => {
     try {
         const result = await db.query('SELECT * FROM transport ORDER BY transport_id');

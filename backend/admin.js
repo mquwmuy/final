@@ -1,14 +1,13 @@
 const express = require('express');
 const db = require('./connect');
 
-const router = express.Router();
+const router = express.Router(); //Чтобы группировать все админ-маршруты в одном файле
 
-// АДМИН: вход (только специальная пара Admin26/Demo20)
-router.post('/login', async (req, res) => {
+// вход
+router.post('/login', (req, res) => {
     try {
         const { login, password } = req.body;
         
-        // Проверяем специальную пару из задания
         if (login === 'Admin26' && password === 'Demo20') {
             return res.json({
                 success: true,
@@ -16,7 +15,6 @@ router.post('/login', async (req, res) => {
             });
         }
         
-        // Если не совпало - ошибка
         return res.status(401).json({ error: 'Неверный логин или пароль администратора' });
         
     } catch (error) {
@@ -25,10 +23,8 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// АДМИН: получить ВСЕ заявки (с фильтрацией и сортировкой)
 router.get('/requests', async (req, res) => {
     try {
-        // Получаем параметры фильтрации из запроса
         const { status, sort, page = 1, limit = 10 } = req.query;
         
         let sql = `
@@ -42,15 +38,15 @@ router.get('/requests', async (req, res) => {
         `;
         const params = [];
         let paramIndex = 1;
-        
-        // Фильтр по статусу
-        if (status && status !== 'все') {
+
+        //фильтр
+        if (status && status !== 'все') { //если статус передан и не "все"
             sql += ` AND r.status_requests = $${paramIndex}`;
             params.push(status);
             paramIndex++;
         }
         
-        // Сортировка
+        //сортировка
         if (sort === 'date_asc') {
             sql += ` ORDER BY r.created_at ASC`;
         } else if (sort === 'date_desc') {
@@ -61,14 +57,14 @@ router.get('/requests', async (req, res) => {
             sql += ` ORDER BY r.created_at DESC`;
         }
         
-        // Пагинация
+        // пагинация
         const offset = (page - 1) * limit;
         sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
         params.push(limit, offset);
         
         const result = await db.query(sql, params);
         
-        // Получаем общее количество заявок для пагинации
+        // получаем общее кол заявок
         let countSql = `SELECT COUNT(*) FROM requests WHERE 1=1`;
         const countParams = [];
         if (status && status !== 'все') {
@@ -90,20 +86,19 @@ router.get('/requests', async (req, res) => {
     }
 });
 
-// АДМИН: изменить статус заявки
+// изменить статус заявки
 router.put('/requests/:id/status', async (req, res) => {
     try {
         const { id } = req.params;
         const { status } = req.body;
         
-        // Разрешённые статусы по заданию
         const allowedStatuses = ['Новая', 'Идет обучение', 'Обучение завершено'];
         
         if (!allowedStatuses.includes(status)) {
             return res.status(400).json({ error: 'Недопустимый статус' });
         }
         
-        // Проверяем, существует ли заявка
+        // Проверяем существует ли заявка
         const checkResult = await db.query(
             'SELECT * FROM requests WHERE requests_id = $1',
             [id]
@@ -113,7 +108,7 @@ router.put('/requests/:id/status', async (req, res) => {
             return res.status(404).json({ error: 'Заявка не найдена' });
         }
         
-        // Обновляем статус
+        // обновляем статус
         await db.query(
             'UPDATE requests SET status_requests = $1 WHERE requests_id = $2',
             [status, id]

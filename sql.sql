@@ -1,1 +1,1 @@
-ALTER TABLE requests ADD COLUMN created_at TIMESTAMP DEFAULT NOW();
+SELECT * FROM user_

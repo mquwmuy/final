@@ -90,12 +90,13 @@
                 color: #ea66d6;
                 text-decoration: none;
             }
+
         </style>
     </head>
     <body>
         <form class="container" id="registerForm">
             <h2>Регистрация</h2>
-            
+
             <label>Логин</label>
             <input
                 type="text"
@@ -103,7 +104,7 @@
                 placeholder="Логин (мин 6, латиница+цифры)"
                 required
             />
-            
+
             <label>Пароль</label>
             <input
                 type="password"
@@ -111,26 +112,28 @@
                 placeholder="Пароль (мин 8)"
                 required
             />
-            
+
             <label>Имя</label>
             <input type="text" id="name" placeholder="Имя" required />
-            
+
             <label>Фамилия</label>
             <input type="text" id="lastName" placeholder="Фамилия" required />
-            
+
             <label>Отчество</label>
             <input
                 type="text"
                 id="middleName"
                 placeholder="Отчество (необязательно)"
             />
-            
+            <label>Дата рождения</label>
+            <input type="date" id="birthDate" required />
+
             <label>Почта</label>
             <input type="email" id="email" placeholder="Email" required />
-            
+
             <label>Номер телефона</label>
             <input type="text" id="phone" placeholder="Телефон" required />
-            
+
             <button type="submit">Зарегистрироваться</button>
             <div id="error" class="error"></div>
             <div class="link">
@@ -138,62 +141,70 @@
             </div>
         </form>
 
-<script>
-    document.getElementById('registerForm').onsubmit = async (e) => {
-        e.preventDefault();
-        
-        const data = {
-            login: document.getElementById('login').value,
-            password: document.getElementById('password').value,
-            name: document.getElementById('name').value,
-            lastName: document.getElementById('lastName').value,
-            middleName: document.getElementById('middleName').value || null,
-            email: document.getElementById('email').value,
-            phone: parseInt(document.getElementById('phone').value)
-        };
-        
-        try {
-            // 1️⃣ Сначала регистрируем пользователя
-            const registerRes = await fetch('http://localhost:3000/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            
-            const registerResult = await registerRes.json();
-            
-            if (!registerRes.ok) {
-                document.getElementById('error').innerText = registerResult.error;
-                return;
-            }
-            
-            // 2️⃣ Регистрация успешна! Теперь сразу логинимся
-            const loginRes = await fetch('http://localhost:3000/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    login: data.login,
-                    password: data.password
-                })
-            });
-            
-            const loginResult = await loginRes.json();
-            
-            if (loginRes.ok) {
-                // Сохраняем данные пользователя
-                localStorage.setItem('userId', loginResult.userId);
-                localStorage.setItem('roleId', loginResult.roleId);
-                
-                // Сразу переходим в личный кабинет (без уведомлений)
-                window.location.href = 'dashboard.html';
-            } else {
-                // Если автоматический вход не сработал
-                window.location.href = 'login.html';
-            }
-        } catch (error) {
-            document.getElementById('error').innerText = 'Ошибка подключения к серверу';
-        }
-    };
-</script>
+        <script>
+            document.getElementById("registerForm").onsubmit = async (e) => {
+                e.preventDefault();
+
+                const data = {
+                    login: document.getElementById("login").value,
+                    password: document.getElementById("password").value,
+                    name: document.getElementById("name").value,
+                    lastName: document.getElementById("lastName").value,
+                    middleName:
+                        document.getElementById("middleName").value || null,
+                    email: document.getElementById("email").value,
+                    phone: parseInt(document.getElementById("phone").value),
+                };
+
+                try {
+                    // 1️⃣ Сначала регистрируем пользователя
+                    const registerRes = await fetch(
+                        "http://localhost:3000/api/auth/register",
+                        {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(data),
+                        },
+                    );
+
+                    const registerResult = await registerRes.json();
+
+                    if (!registerRes.ok) {
+                        document.getElementById("error").innerText =
+                            registerResult.error;
+                        return;
+                    }
+                    //сразу логинимся
+                    const loginRes = await fetch(
+                        "http://localhost:3000/api/auth/login",
+                        {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                login: data.login,
+                                password: data.password,
+                            }),
+                        },
+                    );
+
+                    const loginResult = await loginRes.json();
+
+                    if (loginRes.ok) {
+                        // Сохраняем данные пользователя
+                        localStorage.setItem("userId", loginResult.userId);
+                        localStorage.setItem("roleId", loginResult.roleId);
+
+                        // Сразу переходим в личный кабинет (без уведомлений)
+                        window.location.href = "main.html";
+                    } else {
+                        // Если автоматический вход не сработал
+                        window.location.href = "login.html";
+                    }
+                } catch (error) {
+                    document.getElementById("error").innerText =
+                        "Ошибка подключения к серверу";
+                }
+            };
+        </script>
     </body>
 </html>
