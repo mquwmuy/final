@@ -136,7 +136,6 @@
                     localStorage.setItem('userId', result.userId);
                     localStorage.setItem('roleId', result.roleId);
                     
-                    // Перенаправляем в личный кабинет
                     window.location.href = 'main.html';
                 } else {
                     errorDiv.textContent = result.error;

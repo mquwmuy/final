@@ -3,14 +3,11 @@
 
 // разобрать
 
-
-
 const express = require('express');
 const db = require('./connect');
 
 const router = express.Router();
-
-// ПОЛУЧИТЬ ВСЕ ЗАЯВКИ ПОЛЬЗОВАТЕЛЯ
+//получаем все заявки пользователя
 router.get('/user/:userId', async (req, res) => {
     try {
         const { userId } = req.params;
@@ -57,7 +54,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-// ДОБАВИТЬ ОТЗЫВ К ЗАЯВКЕ
 router.post('/:requestId/feedback', async (req, res) => {
     try {
         const { requestId } = req.params;

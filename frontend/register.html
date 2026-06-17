@@ -157,7 +157,6 @@
                 };
 
                 try {
-                    // 1️⃣ Сначала регистрируем пользователя
                     const registerRes = await fetch(
                         "http://localhost:3000/api/auth/register",
                         {
@@ -190,11 +189,9 @@
                     const loginResult = await loginRes.json();
 
                     if (loginRes.ok) {
-                        // Сохраняем данные пользователя
                         localStorage.setItem("userId", loginResult.userId);
                         localStorage.setItem("roleId", loginResult.roleId);
 
-                        // Сразу переходим в личный кабинет (без уведомлений)
                         window.location.href = "main.html";
                     } else {
                         // Если автоматический вход не сработал

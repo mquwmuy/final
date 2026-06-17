@@ -20,7 +20,6 @@
         h1 { color: #333; }
         h2 { color: #ea66d6; font-size: 18px; }
         
-        /* Форма входа */
         .login-box {
             max-width: 300px;
             margin: 100px auto;
@@ -46,7 +45,6 @@
             cursor: pointer;
         }
         
-        /* Таблица */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -70,7 +68,6 @@
         .status-learning { background: #17a2b8; color: white; padding: 3px 8px; border-radius: 15px; font-size: 12px; }
         .status-completed { background: #28a745; color: white; padding: 3px 8px; border-radius: 15px; font-size: 12px; }
         
-        /* Фильтры */
         .filters {
             margin: 20px 0;
             display: flex;
@@ -106,7 +103,6 @@
 </head>
 <body>
 
-<!-- Форма входа (показывается сначала) -->
 <div id="loginForm" class="login-box">
     <h2>Вход для администратора</h2>
     <input type="text" id="login" placeholder="Логин" value="Admin26">
@@ -116,7 +112,6 @@
     <p style="margin-top: 15px;"><a href="login.html">← Обычный вход</a></p>
 </div>
 
-<!-- Админ-панель (скрыта сначала) -->
 <div id="adminPanel" style="display: none;">
     <div class="container">
         <button class="logout-btn" onclick="logout()">Выйти</button>
@@ -182,8 +177,7 @@
             document.getElementById('requestsList').innerHTML = '<p>Ошибка загрузки</p>';
         }
     }
-    
-    // Отображение заявок в таблице
+    //заявки в таблице
     function displayRequests(requests) {
         if (requests.length === 0) {
             document.getElementById('requestsList').innerHTML = '<p>Нет заявок</p>';
@@ -204,7 +198,7 @@
         `;
         
         requests.forEach(req => {
-            // Определяем цвет статуса
+            // цвет статуса
             let statusClass = '';
             if (req.status_requests === 'Новая') statusClass = 'status-new';
             else if (req.status_requests === 'Идет обучение') statusClass = 'status-learning';
@@ -254,7 +248,7 @@
         }
     }
     
-    // Пагинация (кнопки страниц)
+    // Пагинация кнопки
     function displayPagination(data) {
         if (data.totalPages <= 1) {
             document.getElementById('pagination').innerHTML = '';
