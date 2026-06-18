@@ -1,7 +1,3 @@
-//заявки   
-
-
-// разобрать
 
 const express = require('express');
 const db = require('./connect');
@@ -10,23 +6,21 @@ const router = express.Router();
 //получаем все заявки пользователя
 router.get('/user/:userId', async (req, res) => {
     try {
-        const { userId } = req.params;
-        
-        const result = await db.query(
-            `SELECT r.*, t.type_transport 
-             FROM requests r
-             JOIN transport t ON r.transport_id_fk = t.transport_id
-             WHERE r.user_id_fk = $1
-             ORDER BY r.created_at DESC`,
-            [userId]
-        );
-        
-        res.json(result.rows);
+        const {userId} = req.params
+       const result = await db.query(
+        `SELECT r.*, t.type_transport
+        FROM requests r
+        JOIN transport t ON r.transport_id_fk = t.transport_id
+        WHERE r.user_id_fk = $1
+        ORDER BY r.created_at DESC`, [userId]
+       );
+       res.json(result.rows)
     } catch (error) {
         console.error('Ошибка получения заявок:', error);
-        res.status(500).json({ error: 'Ошибка сервера' });
+        res.status(500).json({ error: 'Ошибка сервера' });  
     }
-});
+}); //SELECT FROM JOIN WHERE ORDER 
+
 
 // новая заявка
 router.post('/', async (req, res) => {
